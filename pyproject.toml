@@ -1,0 +1,20 @@
+
+[project]
+name = "electron-all-in-one"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Wankko Ree", email = "wkr@wkr.moe"},
+]
+dependencies = [
+    "pefile>=2023.2.7",
+    "loguru>=0.7.0",
+    "requests>=2.30.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

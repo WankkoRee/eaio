@@ -4,7 +4,7 @@ from pathlib import Path
 from loguru import logger
 import pefile
 
-from utils import dir_tree, download_electron, file_crc
+from eaio.utils import dir_tree, download_electron, file_crc
 
 
 def is_electron_exe(path: Path) -> tuple[str, str] | None:

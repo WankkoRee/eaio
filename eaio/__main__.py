@@ -4,10 +4,10 @@ import sys
 
 from loguru import logger
 
-from check import check
-from download import download
-from link import link
-from status import status
+from eaio.check import check
+from eaio.download import download
+from eaio.link import link
+from eaio.status import status
 
 
 def main():

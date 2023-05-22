@@ -2,7 +2,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from utils import download_electron
+from eaio.utils import download_electron
 
 
 def download(drive: Path, version: str, arch: str):

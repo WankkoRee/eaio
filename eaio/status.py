@@ -2,7 +2,7 @@ import json
 
 from loguru import logger
 
-from utils import get_drives, file_crc
+from eaio.utils import get_drives, file_crc
 
 
 def status():

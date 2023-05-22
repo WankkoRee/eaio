@@ -2,8 +2,8 @@ from pathlib import Path
 
 from loguru import logger
 
-from check import find_electron_exe
-from utils import dir_tree, download_electron, file_crc
+from eaio.check import find_electron_exe
+from eaio.utils import dir_tree, download_electron, file_crc
 
 
 def create_link(repo: Path, repo_name: Path | str, target: Path, target_name: Path | str):

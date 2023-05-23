@@ -12,6 +12,8 @@ from eaio.status import status
 
 
 def main():
+    logger.remove()
+    logger.add(sys.stderr, format="<level>{level: ^8}</level> | <level>{message}</level>")
     if sys.platform != 'win32':
         logger.error('当前仅支持 Windows 平台，其他平台敬请期待')
         exit(0)

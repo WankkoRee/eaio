@@ -59,6 +59,5 @@ usage: eaio {link,l,check,c,status,s,download,d,help,h} ...
 
 ## todo
 
-- [ ] 优化输出显示效果
 - [ ] 全盘扫描 Electron 应用
 - [ ] 验证其他系统有效性

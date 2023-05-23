@@ -27,7 +27,7 @@ def dir_tree(path: Path, base: Path = None, depth: int = 0) -> Generator[tuple[P
             continue
 
 
-def download_electron(version: str, arch: str, repo: Path, override: bool = False):
+def download_electron(version: str, arch: str, repo: Path, override: bool = False, proxy: str | None = None):
     if repo.exists() and not repo.is_dir():
         # 存在但不是文件夹
         repo.unlink()
@@ -44,7 +44,10 @@ def download_electron(version: str, arch: str, repo: Path, override: bool = Fals
     logger.info(f"目标仓库: {repo}")
     electron_url = f"https://github.com/electron/electron/releases/download/v{version}/electron-v{version}-win32-{arch}.zip"
     logger.debug(f"下载地址: {electron_url}")
-    electron_resp = requests.get(electron_url)
+    electron_resp = requests.get(electron_url, proxies={
+        'http': proxy,
+        'https': proxy,
+    } if proxy else None)
     if electron_resp.status_code != 200:
         logger.error(f"下载失败，HTTP {electron_resp.status_code}")
         exit(1)
@@ -52,7 +55,11 @@ def download_electron(version: str, arch: str, repo: Path, override: bool = Fals
     with io.BytesIO(electron_resp.content) as f:
         with zipfile.ZipFile(f, 'r') as zipf:
             for file in zipf.filelist:
-                with open(repo.joinpath(file.filename), 'wb') as rf:
+                filename = repo.joinpath(file.filename)
+                if filename.parent != repo:
+                    if not filename.parent.exists():
+                        filename.parent.mkdir(parents=True)
+                with open(filename, 'wb') as rf:
                     # 通过覆写文件的方式来更新已被硬链接的应用，如果直接替换文件会导致已有的硬链接失效
                     rf.write(zipf.read(file.filename))
                 signed[file.filename] = hex(file.CRC)

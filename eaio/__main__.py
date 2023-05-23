@@ -26,6 +26,17 @@ def main():
         add_help=False,
         formatter_class=argparse.RawDescriptionHelpFormatter,  # 使手动换行有效
     )
+    parser.add_argument(
+        '-v', '--version',
+        help='闲着无聊就来看看当前版本',
+        action='version', default=argparse.SUPPRESS,
+        version=f'eaio (Electron All in One) v{__version__}',
+    )
+    parser.add_argument(
+        '-h', '--help',
+        help='就是显示你现在看到的这些提示',
+        action='help', default=argparse.SUPPRESS,
+    )
     subparsers = parser.add_subparsers(
         dest='action',
         title='可执行的操作',
@@ -38,7 +49,7 @@ def main():
         help='为目标 Electron 应用创建硬链接以减少磁盘占用',
     )
     link_parser.add_argument(
-        dest='path',
+        'path',
         help='目标 Electron 应用所在路径',
     )
 
@@ -48,7 +59,7 @@ def main():
         help='列出目标 Electron 应用的硬链接情况',
     )
     check_parser.add_argument(
-        dest='path',
+        'path',
         help='目标 Electron 应用所在路径',
     )
 
@@ -64,29 +75,25 @@ def main():
         help='下载 Electron 预编译程序到指定磁盘分区下的 .electron 仓库',
     )
     download_parser.add_argument(
-        dest='drive',
+        'drive',
         help='目标 .electron 仓库所在磁盘分区, 如: C、D、E、F',
     )
     download_parser.add_argument(
-        dest='version',
+        'version',
         help='目标 Electron 版本，如: 1.2.3',
     )
     download_parser.add_argument(
-        dest='arch',
+        'arch',
         help='目标 CPU 架构',
         choices=['ia32', 'x64', 'arm64'],
     )
-
-    version_parser = subparsers.add_parser(
-        name='version',
-        aliases=['v'],
-        help='闲着无聊就来看看当前版本',
-    )
-
-    help_parser = subparsers.add_parser(
-        name='help',
-        aliases=['h'],
-        help='就是显示你现在看到的这些提示',
+    download_parser.add_argument(
+        '-p',
+        '--proxy',
+        dest='proxy',
+        help='网络代理(可选)',
+        metavar='scheme://host:port',
+        required=False,
     )
 
     args = parser.parse_args()
@@ -104,13 +111,7 @@ def main():
             status()
             exit(0)
         case 'download' | 'd':
-            download(Path(f'{args.drive.upper()}:'), args.version, args.arch)
-            exit(0)
-        case 'help' | 'h':
-            parser.print_help()
-            exit(0)
-        case 'version' | 'v':
-            logger.info(f'eaio (Electron All in One) v{__version__}')
+            download(Path(f'{args.drive.upper()}:'), args.version, args.arch, args.proxy)
             exit(0)
         case _:
             logger.error('未知的操作')

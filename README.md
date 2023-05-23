@@ -1,4 +1,4 @@
-# electron-all-in-one
+# eaio (Electron All in One)
 
 [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm.fming.dev)
 
@@ -43,9 +43,11 @@ usage: eaio {link,l,check,c,status,s,download,d,help,h} ...
 
 ## 注意事项
 
-1. 本工具会在执行`link`或`check`操作时，在目标应用所在的磁盘分区下创建`.electron`仓库，用于存储硬链接的源文件，如无特殊情况请不要删、改。
-2. 本工具的`status`操作可以检查所有磁盘分区下`.electron`仓库中所有版本的完整性和有效性，可用于检查下载完成情况、源文件存在情况、源文件改动情况。
-3. 本工具的`download`操作可以下载目标版本和架构的`Electron`预编译程序到指定磁盘分区的`.electron`仓库中，如果已存在则会进行覆盖，所以也可用于对源文件的恢复/修复。
+1. 本工具会在执行`link`或`check`操作时，在目标应用所在的磁盘分区下创建`.electron`仓库，用于存储硬链接的源文件，如无特殊情况请**不要删、改**。
+2. 本工具的`status`操作可以检查所有磁盘分区下`.electron`仓库中所有版本的完整性和有效性，可用于检查**下载完成**情况、源文件**存在**情况、源文件**改动**情况。
+3. 本工具的`download`操作可以下载目标版本和架构的`Electron`预编译程序到指定磁盘分区的`.electron`仓库中，如果已存在则会进行**覆盖**，所以也可用于对源文件的**恢复/修复**。
+4. 请不要对已链接的`Electron`应用进行**文件粉碎**操作，可能会导致源文件改动。
+5. 请不要对`.electron`仓库进行**文件粉碎**操作，可能会导致已链接的`Electron`应用文件改动。
 
 ## 参与开发
 

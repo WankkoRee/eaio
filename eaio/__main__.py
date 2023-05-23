@@ -4,6 +4,7 @@ import sys
 
 from loguru import logger
 
+from eaio import __version__, __description__
 from eaio.check import check
 from eaio.download import download
 from eaio.link import link
@@ -16,7 +17,8 @@ def main():
         exit(0)
 
     parser = argparse.ArgumentParser(
-        description='一个通过将磁盘上所有 Electron 应用中相同文件硬链接到统一位置来减少磁盘占用的解决方案，就像 pnpm 一样。',
+        description=f'eaio (Electron All in One) v{__version__}\n'
+                    f'{__description__}',
         epilog='注意:\n'
                '1. 本工具会在所有磁盘分区下创建 .electron 目录作为硬链接源仓库(link 或 check 时创建)，请不要删除。\n'
                '2. 虽然删除后不会导致已链接的程序不可用，但会使得其失去原本的硬链接特性，需要重新链接才能减少磁盘占用。\n'
@@ -75,6 +77,12 @@ def main():
         choices=['ia32', 'x64', 'arm64'],
     )
 
+    version_parser = subparsers.add_parser(
+        name='version',
+        aliases=['v'],
+        help='闲着无聊就来看看当前版本',
+    )
+
     help_parser = subparsers.add_parser(
         name='help',
         aliases=['h'],
@@ -100,6 +108,9 @@ def main():
             exit(0)
         case 'help' | 'h':
             parser.print_help()
+            exit(0)
+        case 'version' | 'v':
+            logger.info(f'eaio (Electron All in One) v{__version__}')
             exit(0)
         case _:
             logger.error('未知的操作')

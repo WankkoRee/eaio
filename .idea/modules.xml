@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/electron-all-in-one.iml" filepath="$PROJECT_DIR$/.idea/electron-all-in-one.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/eaio.iml" filepath="$PROJECT_DIR$/.idea/eaio.iml" />
     </modules>
   </component>
 </project>

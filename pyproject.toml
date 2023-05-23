@@ -1,6 +1,6 @@
 [project]
-name = "electron-all-in-one"
-version = "0.1.0"
+name = "eaio"
+dynamic = ["version"]
 description = "一个通过将磁盘上所有 Electron 应用中相同文件硬链接到统一位置来减少磁盘占用的解决方案，就像 pnpm 一样。"
 authors = [
     {name = "Wankko Ree", email = "wkr@wkr.moe"},
@@ -13,6 +13,9 @@ dependencies = [
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "GPLv3"}
+
+[tool.pdm]
+version = { source = "file", path = "eaio/__init__.py" }
 
 [build-system]
 requires = ["pdm-backend"]

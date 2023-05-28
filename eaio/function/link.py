@@ -5,10 +5,11 @@ from typing import Iterable
 from loguru import logger
 
 from eaio import __electron_repo_root__, __electron_repo__
-from eaio.util.utils import to_drive
+from eaio.util.error import PEError
+from eaio.util.utils import to_drive, extract_icon, create_win_lnk
 
 
-def create_link(repo: Path, repo_name: Path, target: Path, target_name: Path):
+def create_link(repo: Path, repo_name: Path | str, target: Path, target_name: Path):
     logger.debug(f"将 {repo_name} 链接到 {target_name}")
     repo_file = repo.joinpath(repo_name)
     target_file = target.joinpath(target_name)
@@ -22,7 +23,19 @@ def link(app_entry: Path, arch: str, version: str, files: Iterable[Path]):
     target = app_entry.parent
     for file in files:
         relative_name = file.relative_to(target)
-        create_link(repo, 'electron.exe' if file == app_entry else relative_name, target, relative_name)
+        if file == app_entry:
+            ico_data = b''
+            try:
+                ico_data = extract_icon(app_entry)
+            except PEError as e:
+                logger.error(f"提取图标失败\t{e}")
+            if ico_data:
+                with open(target.joinpath('eaio.ico'), 'wb') as f:
+                    f.write(ico_data)
+            create_win_lnk(app_entry.with_suffix('.lnk'), app_entry, target.joinpath('eaio.ico') if ico_data else None)
+            create_link(repo, 'electron.exe', target, relative_name)
+        else:
+            create_link(repo,  relative_name, target, relative_name)
 
 
 def delete_link(target: Path, target_name: Path | str):

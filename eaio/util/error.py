@@ -24,3 +24,10 @@ class DownloadError(Exception):
     下载时错误
     """
     pass
+
+
+class PEError(Exception):
+    """
+    解析 PE 文件时错误
+    """
+    pass

@@ -9,7 +9,7 @@ import pefile
 from eaio import __electron_repo_root__, __electron_repo__
 from eaio.util.utils import dir_tree, file_crc, get_all_drives, to_drive
 from eaio.util.status import LinkStatus, RepoStatus
-from eaio.util.error import ScanError, RepoError, TargetError
+from eaio.util.error import ScanError, RepoError, TargetError, PEError
 
 
 def is_electron_exe(path: Path) -> bool:
@@ -52,26 +52,23 @@ def parse_electron_exe(path: Path) -> tuple[str, str]:
             case _:
                 msg = f'{path.name} 的 CPU 架构未知:{pefile.MACHINE_TYPE[pe.FILE_HEADER.Machine]}，如确认为应用入口，则需要提交 issue'
                 logger.warning(msg)
-                raise ScanError(msg)
+                raise PEError(msg)
 
         section_rdata = list(filter(lambda section: section.Name.strip(b'\x00') == b'.rdata', pe.sections))
         if len(section_rdata) == 0:
             msg = f'{path.name} 无 .rdata 段，如确认为应用入口，则需要提交 issue'
             logger.warning(msg)
-            raise ScanError(msg)
+            raise PEError(msg)
         elif len(section_rdata) > 1:
             logger.warning(f'{path.name} 的 .rdata 段不唯一，默认使用第一个')
         section_rdata = section_rdata[0]
-
-    with open(path, 'rb') as f:
-        f.seek(section_rdata.PointerToRawData)
-        rdata = f.read(section_rdata.SizeOfRawData)
+        rdata = pe.get_data(section_rdata.VirtualAddress, section_rdata.SizeOfRawData)
 
     versions = [i.decode() for i in (set(re.findall(rb'Chrome/(?:[0-9.]+?|%s) Electron/(\S+?)\x00', rdata)))]
     if len(versions) == 0:
         msg = f'{path.name} 的 .rdata 段中找不到版本信息，如确认为应用入口，则需要提交 issue'
         logger.warning(msg)
-        raise ScanError(msg)
+        raise PEError(msg)
     elif len(versions) > 1:
         logger.warning(f'{path.name} 的 .rdata 段中版本信息不唯一:{versions}，默认使用第一个')
     electron_version = versions[0]

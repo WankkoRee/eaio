@@ -42,6 +42,12 @@ requires_python = ">=3.6.0"
 summary = "Python PE parsing module"
 
 [[package]]
+name = "pylnk3"
+version = "0.4.2"
+requires_python = ">=3.6"
+summary = "Windows LNK File Parser and Creator"
+
+[[package]]
 name = "pysocks"
 version = "1.7.1"
 requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -75,7 +81,7 @@ summary = "A small Python utility to set file creation time on Windows"
 lock_version = "4.2"
 cross_platform = true
 groups = ["default"]
-content_hash = "sha256:da4efa4def3921261f6b0ef58283f9e32bccd3429fa1da884671ab086627b0e1"
+content_hash = "sha256:719e212d8cf36add18605a1e0a958f22854c3c06abd68d1a4cb655631b3b3b1d"
 
 [metadata.files]
 "certifi 2023.5.7" = [
@@ -174,6 +180,10 @@ content_hash = "sha256:da4efa4def3921261f6b0ef58283f9e32bccd3429fa1da884671ab086
 "pefile 2023.2.7" = [
     {url = "https://files.pythonhosted.org/packages/55/26/d0ad8b448476d0a1e8d3ea5622dc77b916db84c6aa3cb1e1c0965af948fc/pefile-2023.2.7-py3-none-any.whl", hash = "sha256:da185cd2af68c08a6cd4481f7325ed600a88f6a813bad9dea07ab3ef73d8d8d6"},
     {url = "https://files.pythonhosted.org/packages/78/c5/3b3c62223f72e2360737fd2a57c30e5b2adecd85e70276879609a7403334/pefile-2023.2.7.tar.gz", hash = "sha256:82e6114004b3d6911c77c3953e3838654b04511b8b66e8583db70c65998017dc"},
+]
+"pylnk3 0.4.2" = [
+    {url = "https://files.pythonhosted.org/packages/4c/28/e3135bf6e3a5580330792eb398c77489f7a6fa1f750add71b4a455d3bc07/pylnk3-0.4.2-py3-none-any.whl", hash = "sha256:f75c80d85b2063f3549bfc4a00228474b90fa590de9f414f8df075b746b1b427"},
+    {url = "https://files.pythonhosted.org/packages/d3/ad/a55396c33f1dbf3593708ad97401e4ae01a617e85fe0a5ced46871db6ee9/pylnk3-0.4.2.tar.gz", hash = "sha256:caee0136f61a8b788154dc8e7c03ac2dde57adc170f1c4786ab4721491ca6e99"},
 ]
 "pysocks 1.7.1" = [
     {url = "https://files.pythonhosted.org/packages/8d/59/b4572118e098ac8e46e399a1dd0f2d85403ce8bbaad9ec79373ed6badaf9/PySocks-1.7.1-py3-none-any.whl", hash = "sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5"},

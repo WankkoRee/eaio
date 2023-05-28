@@ -4,26 +4,12 @@
 
 一个通过将磁盘上所有[Electron](https://github.com/electron/electron)应用中相同文件硬链接到统一位置来减少磁盘占用的解决方案，就像`pnpm`一样。
 
-```text
-usage: eaio {link,l,check,c,status,s,download,d,help,h} ...
+![GUI 应用管理](docs/gui-app.png)
+![GUI 仓库管理](docs/gui-repo.png)
 
-一个通过将磁盘上所有 Electron 应用中相同文件硬链接到统一位置来减少磁盘占用的解决方案，就像 pnpm 一样。
+## 使用介绍
 
-可执行的操作:
-  本工具提供的功能都在这里
-
-  {link,l,check,c,status,s,download,d,help,h}
-    link (l)            为目标 Electron 应用创建硬链接以减少磁盘占用
-    check (c)           列出目标 Electron 应用的硬链接情况
-    status (s)          查看各个磁盘分区下 .eaio 仓库的使用情况，并检查其完整性和有效性
-    download (d)        下载 Electron 预编译程序到指定磁盘分区下的 .eaio 仓库
-    help (h)            就是显示你现在看到的这些提示
-
-注意:
-1. 本工具会在所有磁盘分区下创建 .eaio 目录作为硬链接源仓库(link 或 check 时创建)，请不要删除。
-2. 虽然删除后不会导致已链接的程序不可用，但会使得其失去原本的硬链接特性，需要重新链接才能减少磁盘占用。
-3. 请不要编辑任何已链接的文件(可通过执行 check 操作列出)内容，这会造成其他相同链接的 Electron 应用也发生变动。
-```
+### [简体中文](docs/guide/zh-Hans.md)
 
 ## 原理
 

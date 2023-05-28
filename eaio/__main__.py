@@ -6,7 +6,7 @@ from loguru import logger
 
 from eaio import __fullname__, __description__, __electron_repo_root__, __electron_source__
 from eaio.entry.gui import gui
-from eaio.entry.cli import link, check, status, download
+from eaio.entry.cli import link, unlink, check, status, download
 from eaio.util.utils import to_drive
 
 
@@ -49,6 +49,16 @@ def main():
         help='为目标 Electron 应用创建硬链接以减少磁盘占用',
     )
     link_parser.add_argument(
+        'path',
+        help='目标 Electron 应用所在路径',
+    )
+
+    unlink_parser = subparsers.add_parser(
+        name='unlink',
+        aliases=['u'],
+        help='为已经创建硬链接的目标 Electron 应用取消硬链接',
+    )
+    unlink_parser.add_argument(
         'path',
         help='目标 Electron 应用所在路径',
     )
@@ -111,6 +121,9 @@ def main():
             exit(0)
         case 'link' | 'l':
             link(Path(args.path))
+            exit(0)
+        case 'unlink' | 'u':
+            unlink(Path(args.path))
             exit(0)
         case 'check' | 'c':
             check(Path(args.path))

@@ -40,7 +40,6 @@ def resource_callback(policy, resource):
             "pydoc_data",
             "setuptools",
             "sqlite3",
-            "tkinter",
             "turtledemo",
             "unittest",
             "venv",
@@ -57,19 +56,10 @@ def resource_callback(policy, resource):
         res_name = resource.name
         # print('PythonExtensionModule', resource.name)
         is_useless = check_module((
-            "_asyncio",
-            "_bz2",
-            "_decimal",
             "_elementtree",
-            "_hashlib",
-            "_lzma",
             "_msi",
             "_multiprocessing",
-            "_queue",
             "_sqlite3",
-            "_ssl",
-            "_tkinter",
-            "_uuid",
             "_zoneinfo",
             "pyexpat",
             "winsound",
@@ -296,7 +286,7 @@ def make_exe():
 
     # Install tcl/tk support files to a specified directory so the `tkinter` Python
     # module works.
-    # exe.tcl_files_path = "lib"
+    exe.tcl_files_path = "lib"
 
     # Never attempt to copy Windows runtime DLLs next to the built executable.
     # exe.windows_runtime_dlls_mode = "never"
@@ -327,7 +317,7 @@ def make_exe():
     # `add_python_resources()` adds these objects to the binary, with a load
     # location as defined by the packaging policy's resource location
     # attributes.
-    exe.add_python_resources(exe.pip_install(["./dist/eaio-0.1.0-py3-none-any.whl"]))
+    exe.add_python_resources(exe.pip_install(["./dist/eaio-0.2.0-py3-none-any.whl"]))
 
     # Invoke `pip install` using a requirements file and add the collected resources
     # to our binary.
@@ -376,7 +366,7 @@ def make_msi(exe):
         # The name of your application.
         "eaio",
         # The version of your application.
-        "0.1.0",
+        "0.2.0",
         # The author/manufacturer of your application.
         "Wankko Ree"
     )

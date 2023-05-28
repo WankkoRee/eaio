@@ -4,7 +4,6 @@ import tkinter as tk
 from tkinter import ttk
 from pathlib import Path
 
-import requests
 from loguru import logger
 
 
@@ -196,12 +195,6 @@ class TabRepo(Tab):
             self.scan_repo()
         except DownloadError as e:
             self.error_msg(str(e))
-        except requests.exceptions.InvalidProxyURL as e:
-            self.error_msg("代理格式存在问题，请检查工具中或系统中的代理设置")
-        except requests.exceptions.ProxyError as e:
-            self.error_msg("无法连接到代理，请检查工具中或系统中的代理设置")
-        except requests.exceptions.ConnectionError as e:
-            self.error_msg("网络存在问题")
 
     def get_select_file(self):
         selected = self.gTree.selection()

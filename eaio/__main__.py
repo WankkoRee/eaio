@@ -7,12 +7,21 @@ from loguru import logger
 from eaio import __fullname__, __description__, __electron_repo_root__, __electron_source__
 from eaio.entry.gui import gui
 from eaio.entry.cli import link, unlink, check, status, download
-from eaio.util.utils import to_drive
+from eaio.util.utils import to_drive, log
+
+
+def log_config():
+    logger.remove()
+    log_format = "<level>{level: ^8}</level> | <level>{message}</level>"
+    logger.add(log, filter=lambda log_instance: log_instance['level'].name == "DEBUG")
+    logger.add(log, filter=lambda log_instance: log_instance['level'].name == "WARNING")
+
+    logger.add(sys.stdout, format=log_format, filter=lambda log_instance: log_instance['level'].name == "INFO")
+    logger.add(sys.stderr, format=log_format, filter=lambda log_instance: log_instance['level'].name == "ERROR")
 
 
 def main():
-    logger.remove()
-    logger.add(sys.stderr, format="<level>{level: ^8}</level> | <level>{message}</level>")
+    log_config()
     if sys.platform != 'win32':
         logger.error('当前仅支持 Windows 平台，其他平台敬请期待')
         exit(0)

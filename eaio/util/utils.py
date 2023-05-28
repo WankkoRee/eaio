@@ -1,4 +1,5 @@
 import binascii
+import io
 import math
 from pathlib import Path
 from typing import Generator
@@ -14,11 +15,11 @@ def dir_tree(path: Path, depth: int = 0) -> Generator[tuple[Path, int], None, No
     不会 yield 自身
     :param path: 目录
     :param depth: 默认深度
-    :return:
+    :return: yield path, depth
     """
     for child_path in path.iterdir():
         if child_path.is_symlink():
-            logger.debug(f"dir_tree: {child_path} 是软连接")
+            logger.debug(f"{child_path} 是软连接, 跳过遍历")
             continue
         elif child_path.is_dir():
             yield child_path, depth
@@ -26,7 +27,7 @@ def dir_tree(path: Path, depth: int = 0) -> Generator[tuple[Path, int], None, No
         elif child_path.is_file():
             yield child_path, depth
         else:
-            logger.warning(f"dir_tree: {child_path} 文件类型未知")
+            logger.warning(f"dir_tree: {child_path} 文件类型未知, 跳过遍历")
             continue
 
 
@@ -73,10 +74,14 @@ def str_size(size_bytes: int) -> str:
     :param size_bytes: 字节数
     :return: 带单位的str
     """
-    if size_bytes == 0:
-        return "0 B"
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i = int(math.floor(math.log(size_bytes, 1024)))
-    p = math.pow(1024, i)
-    s = round(size_bytes / p, 2)
+    if size_bytes == 0:
+        i = 0
+        s = 0
+    else:
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        s = round(size_bytes / math.pow(1024, i), 2)
     return "%s %s" % (s, size_name[i])
+
+
+log = io.StringIO()

@@ -9,7 +9,7 @@ from eaio.util.utils import to_drive
 
 
 def create_link(repo: Path, repo_name: Path, target: Path, target_name: Path):
-    logger.info(f"将 {repo_name} 链接到 {target_name}")
+    logger.debug(f"将 {repo_name} 链接到 {target_name}")
     repo_file = repo.joinpath(repo_name)
     target_file = target.joinpath(target_name)
     target_file.unlink()
@@ -26,7 +26,7 @@ def link(app_entry: Path, arch: str, version: str, files: Iterable[Path]):
 
 
 def delete_link(target: Path, target_name: Path | str):
-    logger.info(f"取消 {target_name} 链接")
+    logger.debug(f"取消 {target_name} 链接")
     target_file = target.joinpath(target_name)
     bak = target_file.with_name(target_file.name+'.bak')
     shutil.copy2(target_file, bak)

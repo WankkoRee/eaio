@@ -27,10 +27,10 @@ def download_electron(drive: Path, version: str, arch: str, proxy: str | None = 
         logger.warning(f"{repo} 存在但不是文件夹, 自动删除")
         repo.unlink()
     if not repo.exists():
-        logger.info(f"{repo} 不存在, 自动创建")
+        logger.warning(f"{repo} 不存在, 自动创建")
         repo.mkdir(parents=True)
 
-    logger.info("正在下载 Electron 预编译程序")
+    logger.debug("正在下载 Electron 预编译程序")
     logger.debug(f"目标链接仓库: {repo}")
 
     electron_url = source.format(version=version, platform=__platform__, arch=arch)
@@ -38,15 +38,31 @@ def download_electron(drive: Path, version: str, arch: str, proxy: str | None = 
 
     signed_file = repo.joinpath('eaio.signed.json')
     if signed_file.exists():
-        logger.info(f"{signed_file} 存在, 自动删除")
+        logger.warning(f"{signed_file} 存在, 自动删除")
         signed_file.unlink()  # 删除校验文件，等价于将此目录标记为未下载完成/下载失败
 
-    electron_resp = requests.get(electron_url, proxies={
-        'http': proxy,
-        'https': proxy,
-    } if proxy else None)
+    try:
+        electron_resp = requests.get(electron_url, proxies={
+            'http': proxy,
+            'https': proxy,
+        } if proxy else None)
+    except requests.exceptions.InvalidProxyURL as e:
+        msg = "代理格式存在问题，请检查工具中或系统中的代理设置"
+        logger.warning(msg)
+        raise DownloadError(msg)
+    except requests.exceptions.ProxyError as e:
+        msg = "无法连接到代理，请检查工具中或系统中的代理设置"
+        logger.warning(msg)
+        raise DownloadError(msg)
+    except requests.exceptions.ConnectionError as e:
+        msg = "网络存在问题"
+        logger.warning(msg)
+        raise DownloadError(msg)
+
     if electron_resp.status_code != 200:
-        raise DownloadError(f"下载失败，HTTP {electron_resp.status_code}")
+        msg = f"下载失败，HTTP {electron_resp.status_code}"
+        logger.warning(msg)
+        raise DownloadError(msg)
 
     signed = {}
     with io.BytesIO(electron_resp.content) as f:
@@ -62,4 +78,4 @@ def download_electron(drive: Path, version: str, arch: str, proxy: str | None = 
                 signed[file.filename] = hex(file.CRC)
     with open(signed_file, 'w') as f:  # 写入校验文件，等价于将此目录标记为下载完成
         f.write(json.dumps(signed))
-    logger.info("下载 Electron 预编译程序完成")
+    logger.debug("下载 Electron 预编译程序完成")

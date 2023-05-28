@@ -42,6 +42,12 @@ requires_python = ">=3.6.0"
 summary = "Python PE parsing module"
 
 [[package]]
+name = "pysocks"
+version = "1.7.1"
+requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+summary = "A Python SOCKS client module. See https://github.com/Anorov/PySocks for more information."
+
+[[package]]
 name = "requests"
 version = "2.30.0"
 requires_python = ">=3.7"
@@ -69,7 +75,7 @@ summary = "A small Python utility to set file creation time on Windows"
 lock_version = "4.2"
 cross_platform = true
 groups = ["default"]
-content_hash = "sha256:0b0c8f5f536bb40e89629687bb80b5e8935849d3b87b9b86a2c87da0a9e32924"
+content_hash = "sha256:da4efa4def3921261f6b0ef58283f9e32bccd3429fa1da884671ab086627b0e1"
 
 [metadata.files]
 "certifi 2023.5.7" = [
@@ -168,6 +174,11 @@ content_hash = "sha256:0b0c8f5f536bb40e89629687bb80b5e8935849d3b87b9b86a2c87da0a
 "pefile 2023.2.7" = [
     {url = "https://files.pythonhosted.org/packages/55/26/d0ad8b448476d0a1e8d3ea5622dc77b916db84c6aa3cb1e1c0965af948fc/pefile-2023.2.7-py3-none-any.whl", hash = "sha256:da185cd2af68c08a6cd4481f7325ed600a88f6a813bad9dea07ab3ef73d8d8d6"},
     {url = "https://files.pythonhosted.org/packages/78/c5/3b3c62223f72e2360737fd2a57c30e5b2adecd85e70276879609a7403334/pefile-2023.2.7.tar.gz", hash = "sha256:82e6114004b3d6911c77c3953e3838654b04511b8b66e8583db70c65998017dc"},
+]
+"pysocks 1.7.1" = [
+    {url = "https://files.pythonhosted.org/packages/8d/59/b4572118e098ac8e46e399a1dd0f2d85403ce8bbaad9ec79373ed6badaf9/PySocks-1.7.1-py3-none-any.whl", hash = "sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5"},
+    {url = "https://files.pythonhosted.org/packages/a2/4b/52123768624ae28d84c97515dd96c9958888e8c2d8f122074e31e2be878c/PySocks-1.7.1-py27-none-any.whl", hash = "sha256:08e69f092cc6dbe92a0fdd16eeb9b9ffbc13cadfe5ca4c7bd92ffb078b293299"},
+    {url = "https://files.pythonhosted.org/packages/bd/11/293dd436aea955d45fc4e8a35b6ae7270f5b8e00b53cf6c024c83b657a11/PySocks-1.7.1.tar.gz", hash = "sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0"},
 ]
 "requests 2.30.0" = [
     {url = "https://files.pythonhosted.org/packages/96/80/034ffeca15c0f4e01b7b9c6ad0fb704b44e190cde4e757edbd60be404c41/requests-2.30.0-py3-none-any.whl", hash = "sha256:10e94cc4f3121ee6da529d358cdaeaff2f1c409cd377dbc72b825852f2f7e294"},

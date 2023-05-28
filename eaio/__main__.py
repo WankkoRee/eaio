@@ -4,11 +4,10 @@ import sys
 
 from loguru import logger
 
-from eaio import __version__, __description__
-from eaio.check import check
-from eaio.download import download
-from eaio.link import link
-from eaio.status import status
+from eaio import __fullname__, __description__, __electron_repo_root__, __electron_source__
+from eaio.entry.gui import gui
+from eaio.entry.cli import link, check, status, download
+from eaio.util.utils import to_drive
 
 
 def main():
@@ -19,10 +18,9 @@ def main():
         exit(0)
 
     parser = argparse.ArgumentParser(
-        description=f'eaio (Electron All in One) v{__version__}\n'
-                    f'{__description__}',
+        description=f'{__fullname__}\n{__description__}',
         epilog='注意:\n'
-               '1. 本工具会在所有磁盘分区下创建 .electron 目录作为硬链接源仓库(link 或 check 时创建)，请不要删除。\n'
+               f'1. 本工具会在所有磁盘分区下创建 {__electron_repo_root__} 目录作为链接仓库，请不要删除。\n'
                '2. 虽然删除后不会导致已链接的程序不可用，但会使得其失去原本的硬链接特性，需要重新链接才能减少磁盘占用。\n'
                '3. 请不要编辑任何已链接的文件(可通过执行 check 操作列出)内容，这会造成其他相同链接的 Electron 应用也发生变动。',
         add_help=False,
@@ -32,7 +30,7 @@ def main():
         '-v', '--version',
         help='闲着无聊就来看看当前版本',
         action='version', default=argparse.SUPPRESS,
-        version=f'eaio (Electron All in One) v{__version__}',
+        version=__fullname__,
     )
     parser.add_argument(
         '-h', '--help',
@@ -68,17 +66,17 @@ def main():
     status_parser = subparsers.add_parser(
         name='status',
         aliases=['s'],
-        help='查看各个磁盘分区下 .electron 仓库的使用情况，并检查其完整性和有效性',
+        help=f'查看各个磁盘分区下链接仓库的使用情况，并检查其完整性和有效性',
     )
 
     download_parser = subparsers.add_parser(
         name='download',
         aliases=['d'],
-        help='下载 Electron 预编译程序到指定磁盘分区下的 .electron 仓库',
+        help='下载 Electron 预编译程序到指定磁盘分区下的链接仓库',
     )
     download_parser.add_argument(
         'drive',
-        help='目标 .electron 仓库所在磁盘分区, 如: C、D、E、F',
+        help='链接仓库所在磁盘分区, 如: C、D、E、F',
     )
     download_parser.add_argument(
         'version',
@@ -97,11 +95,19 @@ def main():
         metavar='scheme://host:port',
         required=False,
     )
+    download_parser.add_argument(
+        '-s',
+        '--source',
+        dest='source',
+        help='在线仓库源(可选)',
+        metavar=__electron_source__[0],
+        required=False,
+    )
 
     args = parser.parse_args()
     match args.action:
         case None:
-            parser.print_help()
+            gui()
             exit(0)
         case 'link' | 'l':
             link(Path(args.path))
@@ -113,7 +119,7 @@ def main():
             status()
             exit(0)
         case 'download' | 'd':
-            download(Path(f'{args.drive.upper()}:'), args.version, args.arch, args.proxy)
+            download(to_drive(to_drive(f'{args.drive.strip().upper()}:').drive), args.version, args.arch, args.proxy, args.source)
             exit(0)
         case _:
             logger.error('未知的操作')

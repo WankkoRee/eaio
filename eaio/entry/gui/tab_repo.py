@@ -126,7 +126,7 @@ class TabRepo(Tab):
         self.gInpProxy = ttk.Entry(row3, textvariable=self.vInpProxy, width=0)
         self.gInpProxy.pack(padx=(2, 2), side=tk.LEFT, fill=tk.X, expand=True)
 
-        self.gLblSource = ttk.Label(row3, text="仓库在线源:")
+        self.gLblSource = ttk.Label(row3, text="在线仓库源:")
         self.gLblSource.pack(padx=(2, 2), side=tk.LEFT)
 
         self.gSltSource = ttk.Combobox(row3, values=__electron_source__, width=0)

@@ -18,7 +18,7 @@ def download_electron(drive: Path, version: str, arch: str, proxy: str | None = 
     :param version: 版本
     :param arch: 架构
     :param proxy: 代理，可选
-    :param source: 仓库源，可选
+    :param source: 在线仓库源，可选
     :return:
     :raise: DownloadError
     """

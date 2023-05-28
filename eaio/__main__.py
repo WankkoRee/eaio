@@ -10,7 +10,7 @@ from eaio.entry.cli import link, unlink, check, status, download
 from eaio.util.utils import to_drive, log
 
 
-def log_config():
+def log_config(verbose: bool = False):
     logger.remove()
     log_format = "<level>{level: ^8}</level> | <level>{message}</level>"
     logger.add(log, filter=lambda log_instance: log_instance['level'].name == "DEBUG")
@@ -18,6 +18,10 @@ def log_config():
 
     logger.add(sys.stdout, format=log_format, filter=lambda log_instance: log_instance['level'].name == "INFO")
     logger.add(sys.stderr, format=log_format, filter=lambda log_instance: log_instance['level'].name == "ERROR")
+
+    if verbose:
+        logger.add(sys.stdout, format=log_format, filter=lambda log_instance: log_instance['level'].name == "DEBUG")
+        logger.add(sys.stderr, format=log_format, filter=lambda log_instance: log_instance['level'].name == "WARNING")
 
 
 def main():
@@ -34,6 +38,12 @@ def main():
                '3. 请不要编辑任何已链接的文件(可通过执行 check 操作列出)内容，这会造成其他相同链接的 Electron 应用也发生变动。',
         add_help=False,
         formatter_class=argparse.RawDescriptionHelpFormatter,  # 使手动换行有效
+    )
+    parser.add_argument(
+        '-V', '--Verbose',
+        dest='verbose',
+        action='store_true',
+        help='显示详细日志',
     )
     parser.add_argument(
         '-v', '--version',
@@ -124,6 +134,9 @@ def main():
     )
 
     args = parser.parse_args()
+    if args.verbose:
+        log_config(True)
+
     match args.action:
         case None:
             gui()

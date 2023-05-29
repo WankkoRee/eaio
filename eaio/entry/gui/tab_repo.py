@@ -100,6 +100,8 @@ class TabRepo(Tab):
         self.gTree.tag_configure(RepoChildStatus.Modified.value, background='#ffe3e3')
         self.gTree.tag_configure(RepoStatus.DownloadFailed.value, background='#f1f3f5')
         self.gTree.tag_configure(RepoStatus.NotDownload.value, background='#c5f6fa')
+        self.gTree.tag_configure(RepoRootStatus.NotExist.value, background='#c5f6fa')
+        self.gTree.tag_configure(RepoRootStatus.NotDir.value, background='#f1f3f5')
         self.gTree.bind('<ButtonRelease-3>', self.event)
         self.gTree.grid(row=0, column=0, sticky=tk.NSEW)
 
@@ -168,7 +170,7 @@ class TabRepo(Tab):
             if hide_downloaded and repo_status == RepoChildStatus.Downloaded:
                 continue
             is_root = path.parent == to_drive(path.drive)
-            is_dir = repo_status == RepoChildStatus.IsDir or path.is_dir()
+            is_dir = depth == 0 or depth == 1 or repo_status == RepoChildStatus.IsDir or path.is_dir()
             iid = str(path.absolute())
             self.gTree.insert('' if is_root else str(path.parent.absolute()), 'end', values=('    ' * depth + (str(path) if is_root else path.name), '' if is_dir or repo_status == RepoChildStatus.Deleted else str_size(path.stat().st_size), repo_status.value), iid=iid, open=True, tags=repo_status.value)
             self.vTree[iid] = (path, depth, repo_status)

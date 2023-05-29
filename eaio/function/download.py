@@ -28,7 +28,12 @@ def download_electron(drive: Path, version: str, arch: str, proxy: str | None = 
         repo.unlink()
     if not repo.exists():
         logger.warning(f"{repo} 不存在, 自动创建")
-        repo.mkdir(parents=True)
+        try:
+            repo.mkdir(parents=True)
+        except FileExistsError as e:
+            msg = "无法创建链接仓库，可能是链接仓库根目录不是目录，为防止误删，请自行检查并删除"
+            logger.warning(msg)
+            raise DownloadError(msg)
 
     logger.debug("正在下载 Electron 预编译程序")
     logger.debug(f"目标链接仓库: {repo}")

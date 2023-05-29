@@ -8,7 +8,7 @@ from eaio.function.link import link as link_, unlink as unlink_
 from eaio.function.check import get_repos_status, find_app_entries, get_files_link_status
 from eaio.function.download import download_electron
 from eaio.util.error import TargetError, ScanError, RepoError, DownloadError
-from eaio.util.status import RepoStatus, LinkStatus
+from eaio.util.status import LinkStatus, RepoRootStatus, RepoStatus, RepoChildStatus
 from eaio.util.utils import to_drive, str_size
 
 
@@ -91,13 +91,15 @@ def check(target: Path):
 def status():
     for path, depth, repo_status in get_repos_status():
         match depth, repo_status:
-            case 0, RepoStatus.IsRepoRoot:
+            case 0, RepoRootStatus.AllRight:
                 logger.info(f"{path}")
-            case 1, RepoStatus.IsRepo:
+            case 0, RepoRootStatus.NotExist:
+                logger.info(f"{path} 未创建")
+            case 1, RepoStatus.AllRight:
                 logger.info(' '*depth*2+f"{path.name}")
             case 1, _:
                 logger.error(' '*depth*2+f"{path.name} {repo_status.value}")
-            case _, RepoStatus.Downloaded | RepoStatus.IsDir if depth > 1:
+            case _, RepoChildStatus.Downloaded | RepoChildStatus.IsDir if depth > 1:
                 pass  # logger.debug(' '*2*2+f"{path.relative_to(path.parents[depth-2])} {repo_status.value}")
             case _, _ if depth > 1:
                 logger.error(' '*2*2+f"{path.relative_to(path.parents[depth-2])} {repo_status.value}")

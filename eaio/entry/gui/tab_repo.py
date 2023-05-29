@@ -12,7 +12,7 @@ from eaio.entry.gui.tab import Tab
 from eaio.function.check import get_repos_status
 from eaio.function.download import download_electron
 from eaio.util.error import DownloadError
-from eaio.util.status import RepoStatus
+from eaio.util.status import RepoRootStatus, RepoStatus, RepoChildStatus
 from eaio.util.utils import str_size, get_all_drives, to_drive
 
 
@@ -30,7 +30,7 @@ class TabRepo(Tab):
     gSltArch: ttk.Combobox
     gBtnDownload: ttk.Button
 
-    vTree: dict[str, tuple[Path, int, RepoStatus]]
+    vTree: dict[str, tuple[Path, int, RepoRootStatus | RepoStatus | RepoChildStatus]]
     gTree: ttk.Treeview
     gTreeVScroll: ttk.Scrollbar
     gTreeHScroll: ttk.Scrollbar
@@ -95,9 +95,9 @@ class TabRepo(Tab):
         self.gTree.column('size', width=80, minwidth=60, stretch=True, anchor=tk.E)
         self.gTree.heading('status', text='状态', anchor=tk.CENTER)
         self.gTree.column('status', width=80, minwidth=60, stretch=True, anchor=tk.CENTER)
-        self.gTree.tag_configure(RepoStatus.Downloaded.value, background='#d3f9d8')
-        self.gTree.tag_configure(RepoStatus.Deleted.value, background='#ffe3e3')
-        self.gTree.tag_configure(RepoStatus.Modified.value, background='#ffe3e3')
+        self.gTree.tag_configure(RepoChildStatus.Downloaded.value, background='#d3f9d8')
+        self.gTree.tag_configure(RepoChildStatus.Deleted.value, background='#ffe3e3')
+        self.gTree.tag_configure(RepoChildStatus.Modified.value, background='#ffe3e3')
         self.gTree.tag_configure(RepoStatus.DownloadFailed.value, background='#f1f3f5')
         self.gTree.tag_configure(RepoStatus.NotDownload.value, background='#c5f6fa')
         self.gTree.bind('<ButtonRelease-3>', self.event)
@@ -165,12 +165,12 @@ class TabRepo(Tab):
         hide_downloaded = self.vChkHideDownloaded.get()
 
         for path, depth, repo_status in get_repos_status():
-            if hide_downloaded and repo_status == RepoStatus.Downloaded:
+            if hide_downloaded and repo_status == RepoChildStatus.Downloaded:
                 continue
             is_root = path.parent == to_drive(path.drive)
-            is_dir = repo_status == RepoStatus.IsDir or path.is_dir()
+            is_dir = repo_status == RepoChildStatus.IsDir or path.is_dir()
             iid = str(path.absolute())
-            self.gTree.insert('' if is_root else str(path.parent.absolute()), 'end', values=('    ' * depth + (str(path) if is_root else path.name), '' if is_dir or repo_status == RepoStatus.Deleted else str_size(path.stat().st_size), repo_status.value), iid=iid, open=True, tags=repo_status.value)
+            self.gTree.insert('' if is_root else str(path.parent.absolute()), 'end', values=('    ' * depth + (str(path) if is_root else path.name), '' if is_dir or repo_status == RepoChildStatus.Deleted else str_size(path.stat().st_size), repo_status.value), iid=iid, open=True, tags=repo_status.value)
             self.vTree[iid] = (path, depth, repo_status)
 
     def download_repo(self):

@@ -8,7 +8,7 @@ import pefile
 
 from eaio import __electron_repo_root__, __electron_repo__
 from eaio.util.utils import dir_tree, file_crc, get_all_drives, to_drive
-from eaio.util.status import LinkStatus, RepoStatus
+from eaio.util.status import LinkStatus, RepoRootStatus, RepoStatus, RepoChildStatus
 from eaio.util.error import ScanError, RepoError, TargetError, PEError
 
 
@@ -76,7 +76,7 @@ def parse_electron_exe(path: Path) -> tuple[str, str]:
     return electron_arch, electron_version
 
 
-def check_repo_status(repo: Path, depth: int = 0) -> Generator[tuple[Path, int, RepoStatus], None, None]:
+def check_repo_status(repo: Path, depth: int = 0) -> Generator[tuple[Path, int, RepoRootStatus | RepoStatus | RepoChildStatus], None, None]:
     """
     检查链接仓库状况
 
@@ -100,7 +100,7 @@ def check_repo_status(repo: Path, depth: int = 0) -> Generator[tuple[Path, int, 
         yield repo, depth, RepoStatus.DownloadFailed
         return
 
-    yield repo, depth, RepoStatus.IsRepo
+    yield repo, depth, RepoStatus.AllRight
 
     with open(signed_file, 'r') as f:
         signed: dict[str, str] = json.loads(f.read())
@@ -112,35 +112,32 @@ def check_repo_status(repo: Path, depth: int = 0) -> Generator[tuple[Path, int, 
         for parent in parents:
             if parent != repo:
                 if parent not in already_yield_parents:
-                    yield parent, depth + len(parent.relative_to(repo).parents), RepoStatus.IsDir
+                    yield parent, depth + len(parent.relative_to(repo).parents), RepoChildStatus.IsDir
                     already_yield_parents.add(parent)
         if not file.exists():
             logger.warning(f"{file} 已不存在")
-            yield file, depth + len(parents), RepoStatus.Deleted
+            yield file, depth + len(parents), RepoChildStatus.Deleted
             continue
         crc_actual = file_crc(file)
         if crc_true != crc_actual:
             logger.warning(f"{file} 已被改动, CRC32 预期为 {crc_true}, 实际为 {crc_actual}")
-            yield file, depth + len(parents), RepoStatus.Modified
+            yield file, depth + len(parents), RepoChildStatus.Modified
             continue
-        yield file, depth + len(parents), RepoStatus.Downloaded
+        yield file, depth + len(parents), RepoChildStatus.Downloaded
 
 
-def get_repos_status() -> Generator[tuple[Path, int, RepoStatus], None, None]:
+def get_repos_status() -> Generator[tuple[Path, int, RepoRootStatus | RepoStatus | RepoChildStatus], None, None]:
     for drive in get_all_drives():
         repo_root = drive.joinpath(__electron_repo_root__)
         if not repo_root.exists():
-            logger.warning(f"{repo_root} 不存在，尝试创建")
-            repo_root.mkdir(parents=True)
-            yield repo_root, 0, RepoStatus.IsRepoRoot
+            logger.warning(f"{repo_root} 不存在")
+            yield repo_root, 0, RepoRootStatus.NotExist
             continue
         if not repo_root.is_dir():
-            logger.warning(f"{repo_root} 不为文件夹，尝试删除后重新创建")
-            repo_root.unlink()
-            repo_root.mkdir(parents=True)
-            yield repo_root, 0, RepoStatus.IsRepoRoot
+            logger.warning(f"{repo_root} 不为文件夹")
+            yield repo_root, 0, RepoRootStatus.NotDir
             continue
-        yield repo_root, 0, RepoStatus.IsRepoRoot
+        yield repo_root, 0, RepoRootStatus.AllRight
 
         for repo in repo_root.iterdir():
             yield from check_repo_status(repo, 1)
@@ -205,7 +202,7 @@ def get_files_link_status(target: Path, app_entry: Path, electron_arch: str, ele
 
     repo = to_drive(target.drive).joinpath(__electron_repo_root__).joinpath(__electron_repo__.format(version=electron_version, arch=electron_arch))
     logger.debug(f"预期链接仓库为 {repo}")
-    if any(repo_status != RepoStatus.IsRepo and repo_status != RepoStatus.IsDir and repo_status != RepoStatus.Downloaded for path, depth, repo_status in check_repo_status(repo)):
+    if any(repo_status != RepoStatus.AllRight and repo_status != RepoChildStatus.IsDir and repo_status != RepoChildStatus.Downloaded for path, depth, repo_status in check_repo_status(repo)):
         msg = f'{repo} 链接仓库存在问题'
         logger.warning(msg)
         raise RepoError(msg)

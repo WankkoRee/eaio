@@ -11,12 +11,22 @@ class LinkStatus(enum.Enum):
 
 
 @enum.unique
+class RepoRootStatus(enum.Enum):
+    NotExist = "不存在"
+    NotDir = "非目录"
+    AllRight = "链接仓库根目录"
+
+
+@enum.unique
 class RepoStatus(enum.Enum):
+    NotDownload = "未下载"
+    DownloadFailed = "下载失败"
+    AllRight = "链接仓库"
+
+
+@enum.unique
+class RepoChildStatus(enum.Enum):
     Downloaded = "已下载"
     Deleted = "被删除"
     Modified = "发生改动"
-    DownloadFailed = "下载失败"
-    NotDownload = "未下载"
     IsDir = "文件夹"
-    IsRepo = "链接仓库"
-    IsRepoRoot = "链接仓库根目录"
